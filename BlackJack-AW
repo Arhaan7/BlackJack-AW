@@ -1,0 +1,611 @@
+//Declare libraires
+#include<iostream>
+#include<string>
+#include<math.h>
+#include<cmath>
+#include<ctype.h>
+#include<cstdlib>
+#include<time.h>
+
+using namespace std; 
+
+//Declare functions
+void BlackJack (void);
+int userTurn(void);
+int CPUturn (void);
+void RPS (void); 
+int userCard (void);
+int CPUcard (void);
+
+//Main program 
+main()
+{
+	//Declare variables
+	char gamechoice;
+	string username;
+
+	//Change system color
+	system("COLOR 06");
+	
+	//Random number function
+	srand(time(NULL));
+	
+	//Greating
+	cout<<"Enter your name please"<<endl;
+	getline(cin,username);
+	username.append(", Hello");
+	cout<<endl;
+	
+	cout<<"---------------------------------------------------"<<endl;
+	
+	//Intro of the main program
+	cout<<username<<"."<<" Welcome "<<endl;
+	
+	//Remove great after
+	username.replace(username.find(","), username.length()-username.find(","), "");
+	
+	//Ask user which game they want to play
+	cout<<"Now, Which game would you like to play?"<<endl;
+	
+	//End line
+	cout<<endl;
+	
+	//Output options 
+	cout<<"Intput A if you want to play Blackjack"<<endl;
+	cout<<"Intput B if you want to play Rock-Paper-Scissors"<<endl;
+	cout<<"Game->";
+	
+	//Intake user choice
+	cin>>gamechoice ;
+	cout<<"---------------------------------------------------"<<endl<<endl;
+	
+	//Option A/a
+	if (gamechoice=='A' || gamechoice=='a')
+	{
+		//Call in Function BlackJack
+		BlackJack();
+	}
+	
+	//Option B/b
+	if (gamechoice=='B' || gamechoice=='b')
+	{
+		//Call in Function RPS
+		RPS();
+	}
+	
+	//Other inputs from user will not be valid 
+	if (gamechoice!='A' && gamechoice!='B' && gamechoice!='a' && gamechoice!='b') 
+	{
+		cout<<"Not a valid choice~"<<endl;
+		cout<<"Restart to play again"; 
+	}
+	
+	
+	
+	//Goodbye to user 
+	username.append(", Goodbye");
+	cout<<"-------------------------"<<endl;
+	cout<<username<<endl;
+	cout<<"-------------------------"<<endl<<endl;
+	
+	
+	//Outro of the main program
+	cout<<"***************************************************"<<endl;
+	cout<<"* This is the END. Thank you for playing our games*"<<endl;
+	cout<<"* We hope you enjoyed~~~                          *"<<endl;
+	cout<<"***************************************************"<<endl;
+}
+
+//BlackJack function 
+void BlackJack(void)
+{
+	//Intro and rules of BlackJack
+	cout<<"---------------------------------------------------"<<endl;
+	cout<<"Welcome to BlackJack, Hope You Enjoy!"<<endl;
+	cout<<"---------------------------------------------------"<<endl<<endl;
+	cout<<"RULES:"<<endl;
+	cout<<"--Player will compeat with the dealer, the goal is try to get 21 without going over"<<endl;
+	cout<<"--Number of the card is the value"<<endl;
+	cout<<"--Face cards (Jack,Queen,King) all worth 10"<<endl;
+	cout<<"--Each player starts with two cards"<<endl;
+	cout<<"--Player can add more cards or stay"<<endl;
+	cout<<"--If player go over 21 is called -bust-, the dealer will win unless dealer busted as well"<<endl;
+	cout<<"--Round routates if player or the dealer stop adding cards"<<endl;
+	cout<<"----------------------------------------------------------------------------------------------"<<endl<<endl;
+	
+	//Declare variable
+	int turn,userpoint,cpupoint,uservalue,cpuvalue;
+	
+	//Set variables to 0
+	turn=0;
+	userpoint=0;
+	cpupoint=0;
+	uservalue=0;
+	cpuvalue=0;
+	
+	//Bool 
+	bool CpuPlayed = false, UserPlayed = false;
+	
+	//Loop until the point limit
+	while (userpoint<3 && cpupoint<3)
+	{	
+
+		
+		//If turn is 0
+		if (turn==0)
+		{
+			//Call in userTurn
+			uservalue=userTurn();
+			turn++;
+			UserPlayed = true;
+		}
+		
+		//If turn is 1
+		else if (turn==1)
+		{
+			//Call in CPUturn
+			turn--;
+			cpuvalue=CPUturn();
+			CpuPlayed = true;
+		}
+		
+		//If user/cpu already played
+		if (UserPlayed && CpuPlayed)
+		{
+			//Set bool
+			CpuPlayed = false;
+			UserPlayed = false;
+			
+			//If user got 21
+			if (uservalue==21)
+			{
+				//User gain 1 point
+				userpoint++;
+				
+				//Output points each round
+				cout << endl << endl << "User has " << userpoint << " points.";
+				cout << endl << "Cpu has " << cpupoint << " points." << endl;
+			}
+				
+			//If user got more than 21
+			else if (uservalue>21)
+			{
+				
+				// CPU gain 1 point
+				cpupoint++;
+				turn = 1;
+				// Reset variables back to 0
+				cpuvalue = 0;
+				uservalue = 0;
+			}
+		
+			//If CPU got 21
+			if (cpuvalue==21)
+			{
+				//CPU gain 1 point
+				cpupoint++;
+				
+				//Output points each round
+				cout << endl << endl << "User has " << userpoint << " points.";
+				cout << endl << "Cpu has " << cpupoint << " points." << endl;
+			}
+				
+			//If CPU got more than 21
+			else if (cpuvalue>21)
+			{
+					//User gain 1 point
+					userpoint++;
+					
+					//Turn +1
+					turn = 1;
+					
+					//Set variables back to 0
+					cpuvalue = 0;
+					uservalue = 0;
+			}
+			
+			//If user got less than 21, but have a higher total value than cpu
+			if (uservalue<21 && uservalue>cpuvalue && cpuvalue != 0)
+			{
+				//User gain 1 point
+				userpoint++;
+			}
+			
+			//If CPU got less than 21, but have a higher total value than user
+			else if(cpuvalue<21 && cpuvalue>uservalue && uservalue != 0)
+			{
+				//CPU gain 1 point
+				cpupoint++;
+			}
+		
+			
+			//If both CPU and User busted
+			if(cpuvalue>21 && uservalue>21 && cpuvalue != 0)
+			{
+				cout<<"No point for both player and CPU"<<endl;
+			}
+			
+			//Set variables back to 0
+			uservalue=0;
+			cpuvalue=0;		
+			//Output points each round
+	       	cout << endl << endl << "User has " << userpoint << " points.";
+		    cout << endl << "Cpu has " << cpupoint << " points." << endl;
+		}
+	}
+	
+	//CPU WIN
+	if (cpupoint>userpoint)
+	{
+		cout<<endl<<endl;
+		cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CPU WIN THE GAME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	}
+	
+	//USER WIN
+	else if (cpupoint<userpoint)
+	{
+		cout<<endl<<endl;
+		cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! USER WIN THE GAME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	}
+	
+	//DRAW
+	else if (cpupoint==userpoint)
+	{
+		cout<<endl<<endl;
+		cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DRAW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	}	
+}
+
+//Function userTurn 
+int userTurn(void)	
+{
+    //Declare variables
+	int userstartcard1,userstartcard2,startcardtotal,cardamount;
+	string usercontinue;
+	
+	//Set variable to 0
+	startcardtotal=0;
+	
+	//Poker array 
+	string ascii[13] = { "+---------+\n| A       |\n|         |\n|         |\n|    A	  |\n|         |\n|         |\n|       A |\n+---------+\n",
+                      "+---------+\n| 2       |\n|         |\n|         |\n|    2    |\n|         |\n|         |\n|       2 |\n+---------+\n",                
+                      "+---------+\n| 3       |\n|         |\n|         |\n|    3    |\n|         |\n|         |\n|       3 |\n+---------+\n",                          
+                      "+---------+\n| 4       |\n|         |\n|         |\n|    4    |\n|         |\n|         |\n|       4 |\n+---------+\n",
+                      "+---------+\n| 5       |\n|         |\n|         |\n|    5    |\n|         |\n|         |\n|       5 |\n+---------+\n",
+                      "+---------+\n| 6       |\n|         |\n|         |\n|    6    |\n|         |\n|         |\n|       6 |\n+---------+\n",                                                                                           
+                      "+---------+\n| 7       |\n|         |\n|         |\n|    7    |\n|         |\n|         |\n|       7 |\n+---------+\n",
+                      "+---------+\n| 8       |\n|         |\n|         |\n|    8    |\n|         |\n|         |\n|       8 |\n+---------+\n",
+                      "+---------+\n| 9       |\n|         |\n|         |\n|    9    |\n|         |\n|         |\n|       9 |\n+---------+\n",
+ 	                  "+---------+\n| 10      |\n|         |\n|         |\n|    10   |\n|         |\n|         |\n|       10|\n+---------+\n",
+ 	                  "+---------+\n| J       |\n|         |\n|         |\n|    J    |\n|         |\n|         |\n|       J |\n+---------+\n",
+ 	                  "+---------+\n| Q       |\n|         |\n|         |\n|    Q    |\n|         |\n|         |\n|       Q |\n+---------+\n",
+ 	                  "+---------+\n| K       |\n|         |\n|         |\n|    K    |\n|         |\n|         |\n|       K |\n+---------+\n",
+ 	                 };
+	
+	//Generate random number from 1~10 for user's starting hand
+	userstartcard1=rand()%10+1;
+	cout << ascii [userstartcard1 - 1]<<endl;
+	userstartcard2=rand()%10+1;
+	cout << ascii [userstartcard2 - 1]<<endl;
+	
+	//Total value of user's starting hand
+	startcardtotal = userstartcard1+userstartcard2;
+	
+	//Output starting hand total
+	cout<<"User starting hand is->"<<userstartcard1<<","<<userstartcard2<<", Total of "<<startcardtotal<<endl;
+   
+   	
+	//Loop until user doesn't want cards
+	do{
+	
+		//If user got less than 21
+		if (startcardtotal<21)
+		{
+			//Ask if user wants more cards or stay
+			cout<<"Do you want to continue adding cards? Yes or no"<<endl;
+			cin>>usercontinue;
+			
+			//Call in Function userCard
+			cardamount=userCard();
+			
+			//If user enter "yes"
+			if(usercontinue=="Yes" || usercontinue=="yes")
+			{
+				//Output new card value
+				cout<<"Your new card value is->"<<cardamount<<endl;
+				
+				//outputting acsii art 
+				cout << ascii[cardamount - 1] << endl;
+				
+				//New total value after adding the new card
+				startcardtotal+=cardamount; 
+				cout<<"Your new total value is "<<startcardtotal<<endl; 
+			}
+		}
+		
+		//If user got more than 21
+		if(startcardtotal>21)
+		{
+			//Output information
+			cout<<"Busted, over 21"<<endl; 
+			
+			//End loop
+			usercontinue="No";
+		}
+		
+		//If user got 21
+		if(startcardtotal == 21)
+			usercontinue="No";
+			
+	}while(usercontinue == "yes" || usercontinue=="Yes"); 
+	
+	//Return variable
+	return(startcardtotal);
+}
+
+//Function userCard 
+int userCard (void)
+{
+	//Declare variables
+	int morecard;
+	
+	//Generate number from 1~10
+	morecard=rand()%10+1;
+	
+	//Return variable
+	return(morecard);
+
+}
+
+// Function CPUturn 
+int CPUturn (void)
+{
+	//Declare variables
+	int cpustartcard1,cpustartcard2,cputotal,cpuchoice,cpuamount;
+
+	//Set variables to 0
+	cpuamount=0;
+	
+	//Poker array 
+	string asciiCpu[13] = { "+---------+\n| A       |\n|         |\n|         |\n|    A	  |\n|         |\n|         |\n|       A |\n+---------+\n",
+                      "+---------+\n| 2       |\n|         |\n|         |\n|    2    |\n|         |\n|         |\n|       2 |\n+---------+\n",                
+                      "+---------+\n| 3       |\n|         |\n|         |\n|    3    |\n|         |\n|         |\n|       3 |\n+---------+\n",                          
+                      "+---------+\n| 4       |\n|         |\n|         |\n|    4    |\n|         |\n|         |\n|       4 |\n+---------+\n",
+                      "+---------+\n| 5       |\n|         |\n|         |\n|    5    |\n|         |\n|         |\n|       5 |\n+---------+\n",
+                      "+---------+\n| 6       |\n|         |\n|         |\n|    6    |\n|         |\n|         |\n|       6 |\n+---------+\n",                                                                                           
+                      "+---------+\n| 7       |\n|         |\n|         |\n|    7    |\n|         |\n|         |\n|       7 |\n+---------+\n",
+                      "+---------+\n| 8       |\n|         |\n|         |\n|    8    |\n|         |\n|         |\n|       8 |\n+---------+\n",
+                      "+---------+\n| 9       |\n|         |\n|         |\n|    9    |\n|         |\n|         |\n|       9 |\n+---------+\n",
+ 	                  "+---------+\n| 10      |\n|         |\n|         |\n|    10   |\n|         |\n|         |\n|       10|\n+---------+\n",
+ 	                  "+---------+\n| J       |\n|         |\n|         |\n|    J    |\n|         |\n|         |\n|       J |\n+---------+\n",
+ 	                  "+---------+\n| Q       |\n|         |\n|         |\n|    Q    |\n|         |\n|         |\n|       Q |\n+---------+\n",
+ 	                  "+---------+\n| K       |\n|         |\n|         |\n|    K    |\n|         |\n|         |\n|       K |\n+---------+\n",
+ 	                 };
+ 	                 
+ 	//Output CPU Turn
+	cout<<endl;
+	cout<<"------------"<<endl;
+	cout<<"CPU's turn"<<endl;
+	cout<<"------------"<<endl;                
+ 	   
+	//Set variables to 0	                        
+ 	cpuchoice=0;
+	cputotal=0;
+	
+	//Generate number from 1~10
+	cpustartcard1=rand()%10+1;
+	cout << asciiCpu [cpustartcard1 - 1]<<endl;
+	cpustartcard2 =11;
+	cout << asciiCpu [cpustartcard2 - 1]<<endl;
+	
+	//Generate number from 1~2
+	cpuchoice=rand()%2+1;
+	
+	//CPU starting hand total
+	cputotal=cpustartcard1+cpustartcard2;
+	
+	//CPU starting hands and total value
+	cout<<"CPU's starting hands are->"<<cpustartcard1<<","<<cpustartcard2<<", Total of->"<<cputotal<<endl;
+	
+	
+	//If cpuchoice is 2
+	if (cpuchoice==2 || cputotal == 21)
+	{
+	    //CPU stay
+		cout<<"CPU stay"<<endl;
+	}
+	
+	//Else
+	else
+	{
+		//Loop if cpuchoice is 1
+		do{
+		 	
+			//If total less than 21
+			if(cputotal<21)
+			{
+				//Call in function CPUcard
+				cpuamount=CPUcard();
+			
+				//If cpuchoice is 1
+				if (cpuchoice==1)
+				{
+					//Output information
+					cout<<"CPU wants to add one card"<<endl;
+					
+					//New card value
+					cout<<"The new card value is->"<<cpuamount<<endl;
+					cout << asciiCpu[cpuamount - 1] << endl;
+					cputotal +=cpuamount; 
+					
+					//New total value
+					cout<<"The new total value is->"<<cputotal<<endl;
+				} 
+			
+				//If cpuchoice is 2		
+				else if (cpuchoice==2)
+				{
+					//Output information
+					cout<<"CPU wants to stay"<<endl;
+				}	
+			}
+					
+			//If total bigger than 21	
+			if (cputotal>21)
+			{
+				//Output information
+				cout<<"CPU busted"<<endl;
+				
+				//End loop
+				cpuchoice=2;		
+			}
+			
+			//If User got 21
+			if (cputotal == 21)
+				cpuchoice = 2;
+			
+		}while (cpuchoice==1);
+	}
+
+	
+	//Return variable
+	return(cputotal);
+}
+
+
+//Function CPUcard
+int CPUcard (void)
+{
+	//Declare variables
+	int CPUmorecard;
+
+	//Generate number 1~10
+	CPUmorecard=rand()%10+1;
+	
+	//Return variables
+	return(CPUmorecard);
+}
+
+
+//RPS function 
+void RPS(void)
+{
+	//Intro of Rock-Paper-Scissors 
+	cout<<"---------------------------------------------------"<<endl;
+	cout<<"Welcome to Rock-Paper-Scissors, Hope You Enjoy!"<<endl;
+	cout<<"---------------------------------------------------"<<endl<<endl;
+	cout<<"RULES:"<<endl;
+	cout<<"You know how to play this one!"<<endl;
+	cout<<"---------------------------------------------------"<<endl<<endl;
+	
+	//Declare variables
+	int userChoice, cpuChoice, counter, cpuCounter; 
+	
+	//Set variables to 0
+	counter=0;
+	cpuCounter=0;	
+		
+		//Starting loop
+		do
+		{
+			//Ask user rock paper or scissors
+			cout<<endl<<"Pick 1 for rock"<<endl;
+			cout<<"Pick 2 for paper"<<endl;
+			cout<<"Pick 3 for scissors"<<endl;
+			cout<<"User Choice->";
+			
+			//Intake user choice
+			cin>>userChoice;  
+	        
+			//Generate random number from 1~3
+			cpuChoice=rand()%3+1;
+	 
+	      	//CPU choice 
+			cout<<"CPU picks "<<cpuChoice<<endl;
+		    
+		
+			//CPU picks rock and user picks paper 
+			if((cpuChoice==1)&&(userChoice==2))
+			{
+				cout<<endl;
+				counter++; 
+				cout<<"User picked paper and CPU picked rock, user wins"<<endl;
+			}
+			
+			//User picks rock and cpu picks paper 
+    		else if((cpuChoice==2)&&(userChoice==1)) 
+    	 	{
+     			cout<<endl;
+				cpuCounter++; 
+     			cout<<"CPU picked paper, user picked rock, user loses"<<endl;
+	 		}
+	   		
+			//User picks rock and cpu picks scissors 
+			else if((userChoice==1)&&(cpuChoice==3))
+			{
+				cout<<endl;
+				counter++; 
+				cout<<"User picked rock, user wins"<<endl; 
+			}
+			
+			//User picks scissors and cpu picks rock 
+			else if((cpuChoice==1)&&(userChoice==3))
+			{
+				cout<<endl;
+				cpuCounter++; 
+				cout<<"CPU picked rock, CPU wins"<<endl; 
+			}
+			
+			//CPU chooses scissors and user chooses paper 
+			else if((cpuChoice==3)&&(userChoice==2))
+			{
+				cout<<endl;
+				cpuCounter++; 
+				cout<<"CPU picked scissors, CPU wins wins"<<endl; 
+			}
+		
+			//User chooses scissors and cpu chooses paper 
+			else if((cpuChoice==2)&&(userChoice==3))
+			{
+				cout<<endl;
+				counter++; 
+				cout<<"User picked scissors, user wins"<<endl; 
+			}
+		
+			//CPU and user tie 
+			else if(userChoice==cpuChoice)
+			{
+				cout<<endl;
+				cout<<"Tie, no points"<<endl; 
+			}
+		
+			//Other inputs rather than 1,2,3 from user
+			else
+			{
+				
+				cout<<endl;
+				cout<<"Number is not valid. Enter again: "<<endl;
+				cin>>userChoice;
+			}
+		
+	//Ending loop 
+	}while((counter!=3)&&(cpuCounter!=3));
+	
+	//If user wins 
+	if(counter>cpuCounter)
+	{
+		cout<<endl;
+		cout<<"------------"<<endl;
+		cout<<"User wins"<<endl;  
+		cout<<"------------"<<endl;
+	}
+
+	//If CPU wins 
+	else
+	{
+		cout<<endl;
+		cout<<"------------"<<endl;
+		cout<<"CPU wins"<<endl; 
+		cout<<"------------"<<endl;
+	}
+}
